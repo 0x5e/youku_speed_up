@@ -49,7 +49,7 @@ def login():
 	response = session.get(actions['login'], params = params)
 	data = loads_jsonp(response.text)
 	if data['result'] == 'success':
-		logging.info('登录成功')
+		logging.info(u'登录成功')
 		return True
 	else:
 		logging.info(data['errorMsg'])
@@ -78,14 +78,14 @@ def main():
 
 	status = get_status()
 	if status['speed_up_state'] == True:
-		logging('宽带加速已开启')
+		logging.info(u'宽带加速已开启')
 		return
 
 	if status['speed_up_switch'] == 2:
-		logging.info('开启[加速服务开关]...')
+		logging.info(u'开启[加速服务开关]...')
 		switch()
 
-	logging.info('开启[宽带加速]...')
+	logging.info(u'开启[宽带加速]...')
 	speed_up()
 
 if __name__ == '__main__':
