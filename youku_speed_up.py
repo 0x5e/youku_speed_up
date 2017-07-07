@@ -9,6 +9,8 @@ import json
 import re
 import hashlib
 import logging
+import os
+import pickle
 
 logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
 
@@ -29,6 +31,12 @@ def loads_jsonp(_jsonp):
 	return json.loads(re.match('.*?({.*}).*', _jsonp, re.S).group(1))
 
 def login():
+	cookie_file_name = '%s.cookie'%passport
+	if os.path.isfile(cookie_file_name):
+		with open(cookie_file_name) as f:
+			session.cookies = requests.utils.cookiejar_from_dict(pickle.load(f))
+			return True
+
 	response = session.get(actions['refreshFormToken'])
 	token = loads_jsonp(response.text)['data']['formtoken']
 	logging.debug(token)
@@ -50,6 +58,8 @@ def login():
 	data = loads_jsonp(response.text)
 	if data['result'] == 'success':
 		logging.info(u'登录成功')
+		with open(cookie_file_name, 'w') as f:
+		    pickle.dump(requests.utils.dict_from_cookiejar(session.cookies), f)
 		return True
 	else:
 		logging.info(data['errorMsg'])
