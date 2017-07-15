@@ -22,6 +22,7 @@ actions = {
 	'login': 'http://account.youku.com/login/confirm.json',
 
 	# http://static.youku.com/paymentcenter/vip-pc/build/js/libs/config-build.js
+	'get_member_info': 'http://vip.youku.com/ajax/member/get_member_info.jsonp', # 获取用户基本信息
 	'speed_up': 'http://vip.youku.com/?c=ajax&a=ajax_do_speed_up', # 宽带加速
 	'switch_service_url': 'http://vip.youku.com/?c=ajax&a=ajax_speedup_service_switch', # 加速服务开关
 	'speed_status': 'http://vip.youku.com/ajax/speedup/get_status.jsonp', # 用户的宽带加速状态判断
@@ -35,7 +36,14 @@ def login():
 	if os.path.isfile(cookie_file_name):
 		with open(cookie_file_name) as f:
 			session.cookies = requests.utils.cookiejar_from_dict(pickle.load(f))
-			return True
+
+	response = session.get(actions['get_member_info'])
+	data = loads_jsonp(response.text)
+	if data['code'] == '20000':
+		return True
+
+	logging.info(data['msg'])
+	session.cookies = requests.utils.cookiejar_from_dict({})
 
 	response = session.get(actions['refreshFormToken'])
 	token = loads_jsonp(response.text)['data']['formtoken']
