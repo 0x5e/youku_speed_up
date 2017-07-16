@@ -12,9 +12,13 @@ import logging
 import os
 import pickle
 
-logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.DEBUG)
 
 session = requests.session()
+# session.headers = {
+# 	'Referer': 'http://vip.youku.com/vips/priSpeedup.html',
+# 	'User-Agent': 'Mozilla/5.0'
+# }
 
 actions = {
 	# 'getConfig': 'http://account.youku.com/getConfig.json',
@@ -37,7 +41,8 @@ def login():
 		with open(cookie_file_name) as f:
 			session.cookies = requests.utils.cookiejar_from_dict(pickle.load(f))
 
-	response = session.get(actions['get_member_info'])
+	response = session.get(actions['speed_status'])
+	logging.debug('Response: %s'%response.text)
 	data = loads_jsonp(response.text)
 	if data['code'] == '20000':
 		return True
@@ -46,8 +51,8 @@ def login():
 	session.cookies = requests.utils.cookiejar_from_dict({})
 
 	response = session.get(actions['refreshFormToken'])
+	logging.debug('Response: %s'%response.text)
 	token = loads_jsonp(response.text)['data']['formtoken']
-	logging.debug(token)
 
 	m = hashlib.md5()
 	m.update(password)
@@ -63,6 +68,7 @@ def login():
 	}
 	
 	response = session.get(actions['login'], params = params)
+	logging.debug('Response: %s'%response.text)
 	data = loads_jsonp(response.text)
 	if data['result'] == 'success':
 		logging.info(u'登录成功')
@@ -75,11 +81,13 @@ def login():
 
 def get_status():
 	response = session.get(actions['speed_status'])
+	logging.debug('Response: %s'%response.text)
 	data = loads_jsonp(response.text)['result']
 	return data
 
 def speed_up():
 	response = session.get(actions['speed_up'])
+	logging.debug('Response: %s'%response.text)
 	data = response.json()
 	logging.info(data['msg'])
 	if 'operator_error_msg' in data['result']:
@@ -87,6 +95,7 @@ def speed_up():
 
 def switch():
 	response = session.get(actions['switch_service_url'])
+	logging.debug('Response: %s'%response.text)
 	data = response.json()
 	logging.info(data['msg'])
 
