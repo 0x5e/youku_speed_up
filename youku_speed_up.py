@@ -11,8 +11,15 @@ import hashlib
 import logging
 import os
 import pickle
+import sys
 
-logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.DEBUG)
+log_switch = False #日志开关，True开，False关
+log_path = os.path.join(os.path.expanduser("~"), 'Desktop') + '/' #日志路径，为win7+的桌面路径
+
+if log_switch == True:
+	logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', filename=log_path+'log.txt', logging='a', level=logging.DEBUG)
+else:
+	logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
 
 session = requests.session()
 # session.headers = {
@@ -36,7 +43,7 @@ def loads_jsonp(_jsonp):
 	return json.loads(re.match('.*?({.*}).*', _jsonp, re.S).group(1))
 
 def login():
-	cookie_file_name = '%s.cookie'%passport
+	cookie_file_name = os.path.dirname(os.path.realpath(__file__)) + '/' + '%s.cookie'%passport
 	if os.path.isfile(cookie_file_name):
 		with open(cookie_file_name) as f:
 			session.cookies = requests.utils.cookiejar_from_dict(pickle.load(f))
@@ -47,6 +54,7 @@ def login():
 	if data['code'] == '20000':
 		return True
 
+	logging.info(u'开始登陆')
 	logging.info(data['msg'])
 	session.cookies = requests.utils.cookiejar_from_dict({})
 
@@ -116,4 +124,7 @@ def main():
 	speed_up()
 
 if __name__ == '__main__':
+	#不加下面2句好像在win环境下会报错
+	reload(sys)
+	sys.setdefaultencoding('utf-8')
 	main()
