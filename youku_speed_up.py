@@ -14,7 +14,7 @@ import pickle
 import sys
 
 log_switch = False #日志开关，True开，False关
-log_path = os.path.join(os.path.expanduser("~"), 'Desktop') + '/' #日志路径，为win7+的桌面路径
+log_path = sys.path[0] + '/' #日志路径，脚本文件所在文件夹下
 
 if log_switch == True:
 	logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', filename=log_path+'log.txt', logging='a', level=logging.DEBUG)
