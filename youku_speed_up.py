@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-passport = '15000000000'
-password = '000000'
+passport = '15000000000' #帐号
+password = '000000' #密码
 
 import requests
 import json
@@ -11,8 +11,14 @@ import hashlib
 import logging
 import os
 import pickle
+import sys
 
-logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.DEBUG)
+log_path = '' #日志路径
+
+if len(log_path) > 0:
+	logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', filename=log_path, logging='a', level=logging.DEBUG)
+else:
+	logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
 
 session = requests.session()
 # session.headers = {
@@ -116,4 +122,7 @@ def main():
 	speed_up()
 
 if __name__ == '__main__':
+	#不加下面2句好像在win环境下会报错
+	reload(sys)
+	sys.setdefaultencoding('utf-8')
 	main()
