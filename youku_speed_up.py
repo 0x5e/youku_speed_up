@@ -4,8 +4,6 @@
 passport = '15000000000' #帐号
 password = '000000' #密码
 
-log_path = '' #日志路径
-
 import requests
 import json
 import re
@@ -14,6 +12,8 @@ import logging
 import os
 import pickle
 import sys
+
+log_path = '' #日志路径
 
 if len(log_path) > 0:
 	logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', filename=log_path, logging='a', level=logging.DEBUG)
@@ -42,7 +42,7 @@ def loads_jsonp(_jsonp):
 	return json.loads(re.match('.*?({.*}).*', _jsonp, re.S).group(1))
 
 def login():
-	cookie_file_name = os.path.dirname(os.path.realpath(__file__)) + '/' + '%s.cookie'%passport
+	cookie_file_name = '%s.cookie'%passport
 	if os.path.isfile(cookie_file_name):
 		with open(cookie_file_name) as f:
 			session.cookies = requests.utils.cookiejar_from_dict(pickle.load(f))
