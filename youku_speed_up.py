@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-passport = '15000000000'
-password = '000000'
+passport = '15000000000' #帐号
+password = '000000' #密码
+
+log_path = '' #日志路径
 
 import requests
 import json
@@ -13,11 +15,8 @@ import os
 import pickle
 import sys
 
-log_switch = False #日志开关，True开，False关
-log_path = sys.path[0] + '/' #日志路径，脚本文件所在文件夹下
-
-if log_switch == True:
-	logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', filename=log_path+'log.txt', logging='a', level=logging.DEBUG)
+if len(log_path) > 0:
+	logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', filename=log_path, logging='a', level=logging.DEBUG)
 else:
 	logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S', level=logging.INFO)
 
@@ -54,7 +53,6 @@ def login():
 	if data['code'] == '20000':
 		return True
 
-	logging.info(u'开始登陆')
 	logging.info(data['msg'])
 	session.cookies = requests.utils.cookiejar_from_dict({})
 
