@@ -60,6 +60,10 @@ def login():
 	logging.debug('Response: %s'%response.text)
 	token = loads_jsonp(response.text)['data']['formtoken']
 
+	# 当前IP
+	response = requests.get('http://ip.cn', headers = {'User-Agent': 'curl/7.54.0'})
+	logging.info(response.text.strip())
+
 	m = hashlib.md5()
 	m.update(password)
 	md5_password = m.hexdigest()
