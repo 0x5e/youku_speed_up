@@ -100,7 +100,7 @@ def speed_up():
 	logging.debug('Response: %s'%response.text)
 	data = response.json()
 	logging.info(data['msg'])
-	if 'operator_error_msg' in data['result']:
+	if 'result' in data and 'operator_error_msg' in data['result']:
 		logging.info(data['result']['operator_error_msg'])
 
 def switch():
